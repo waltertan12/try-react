@@ -16,6 +16,8 @@ get '/comments' do
 end
 
 post '/comments' do
+  p "---- PARAMS ----"
+  p params
   comment = Comment.create(author: params["author"], body: params["body"])
   Comment.all.to_json if comment.save
 end
