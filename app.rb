@@ -10,3 +10,12 @@ ActiveRecord::Base.establish_connection(
 get '/' do
   erb :index
 end
+
+get '/comments' do
+  Comment.all.to_json
+end
+
+post '/comments' do
+  comment = Comment.create(author: params["author"], body: params["body"])
+  Comment.all.to_json if comment.save
+end
