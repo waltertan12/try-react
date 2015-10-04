@@ -86,6 +86,8 @@ var Notepad = React.createClass({
       success: function(data) {
         console.log("Delete success?");
         console.log(data);
+        
+        this.selected = null;
         onChange();
       }.bind(this),
       error: function(xhr, status, err) {
@@ -193,9 +195,3 @@ var onAddNote = function () {
 };
 
 onChange();
-// React.render(
-//   <Notepad url="/notes" 
-//            onChangeNote={onChangeNote}
-//            onAddNote={onAddNote} />,
-//   document.getElementById("content")
-// );
