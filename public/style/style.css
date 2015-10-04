@@ -17,11 +17,12 @@ body {
 }
 
 .jumbotron {
-  background: url("../images/jumbotron.jpg");
+  /*background: url("../images/jumbotron.jpg");*/
+  background: url("../images/maxresdefault.jpg");
   background-size: cover;
   background-position: absolute;
   margin-top: 20px;
-  text-shadow: 0px 0px 20px white;
+  /*text-shadow: 0px 0px 20px white;*/
 }
 
 .note-summary {

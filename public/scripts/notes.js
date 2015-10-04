@@ -62,9 +62,6 @@ var Notepad = React.createClass({
     onChange();
   },
   submitNote: function () {
-    console.log("this.selected");
-    console.log(this.selected);
-
     if (typeof this.selected.id === "undefined") {
       httpRequest = "POST";
     } else {
@@ -156,6 +153,7 @@ var NoteSummary = React.createClass({
     var note = this.props.note;
     var title = note.content;
     var saved = (typeof note.id === "undefined") ? " (Unsaved)" : ""
+    
 
     if (title.indexOf('\n') > 0) {
       title = note.content.substring(0, note.content.indexOf('\n'));
