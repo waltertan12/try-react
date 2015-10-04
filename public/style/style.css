@@ -1,5 +1,5 @@
 body {
-  font-family: Roboto, Consolas;
+  font-family: Ubuntu, Roboto, Consolas;
   text-align:  center;
 }
 
@@ -25,7 +25,21 @@ body {
 }
 
 .note-summary {
-  padding: 10px;
+  padding: 30px 10px;
   border-radius: 5px;
   border: 1px solid lightgray;
+  border-bottom: 0px;
+  font-weight: bold;
+}
+
+div.note-list a:last-child div.note-summary {
+  border-bottom: 1px solid lightgray;
+}
+
+.note-summary:hover {
+  background-color: #eee;
+}
+
+.container {
+  margin-bottom: 20px;
 }

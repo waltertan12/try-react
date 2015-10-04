@@ -19,7 +19,12 @@ var NoteEditor = React.createClass({
       <br/>
       <button onClick={this.props.onDelete}
               className="btn btn-danger">Delete Note
-      </button>
+      </button>&nbsp;
+      <button 
+            className="btn btn-success" 
+            onClick={this.props.submitNote.bind(this.props.notepad)}>
+                  Save Note
+          </button>
       </div>
     );
   }
@@ -57,14 +62,25 @@ var Notepad = React.createClass({
     onChange();
   },
   submitNote: function () {
+    console.log("this.selected");
     console.log(this.selected);
+
+    if (typeof this.selected.id === "undefined") {
+      httpRequest = "POST";
+    } else {
+      httpRequest = "PUT";
+    }
+
     $.ajax({
       url: this.props.url,
       dataType: "json",
       cache: false,
-      type: "POST",
+      type: httpRequest,
       data: this.selected,
       success: function(data) {
+        var last = data.length - 1;
+        this.selected = data[last];
+        this.loadNotesFromServer();
         onChange();
       }.bind(this),
       error: function(xhr, status, err) {
@@ -78,22 +94,29 @@ var Notepad = React.createClass({
     onChange();
   },
   onDelete: function () {
-    $.ajax({
-      url: this.props.url,
-      type: "DELETE",
-      dataType: "json",
-      data: this.selected,
-      success: function(data) {
-        console.log("Delete success?");
-        console.log(data);
-        
-        this.selected = null;
-        onChange();
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.error(this.props.url, status, err.toString());
-      }.bind(this)
-    });
+    if (typeof this.selected.id === "undefined") {
+      this.selected = null;
+      this.loadNotesFromServer();
+      onChange();
+    } else {
+      $.ajax({
+        url: this.props.url,
+        type: "DELETE",
+        dataType: "json",
+        data: this.selected,
+        success: function(data) {
+          console.log("Delete success?");
+          console.log(data);
+
+          this.selected = null;
+          this.loadNotesFromServer();
+          onChange();
+        }.bind(this),
+        error: function(xhr, status, err) {
+          console.error(this.props.url, status, err.toString());
+        }.bind(this)
+      });
+    }
   },
   render: function () {
     var notes = this.state.notes;
@@ -103,25 +126,22 @@ var Notepad = React.createClass({
     if (this.selected !== null) {
       editor = <NoteEditor url={this.props.url} 
                            note={this.selected}
+                           submitNote={this.submitNote}
+                           notepad={this} 
                            onDelete={this.onDelete}
                            onChange={this.props.onChangeNote} />;
     }
 
     return (
       <div id="notepad">
-        <NotesList onSelectNote={this.onSelectNote} 
+        <NotesList onSelectNote={this.onSelectNote}
                    notes={notes}/>
         <br/>
         <div>
           <button 
-            className="btn btn-default" 
+            className="btn btn-primary" 
             onClick={this.onAddNote}>
                   Add Note
-          </button>
-          <button 
-            className="btn btn-default" 
-            onClick={this.submitNote}>
-                  Submit
           </button>
         </div>
         <br/>
@@ -135,12 +155,16 @@ var NoteSummary = React.createClass({
   render: function () {
     var note = this.props.note;
     var title = note.content;
+    var saved = (typeof note.id === "undefined") ? " (Unsaved)" : ""
+
     if (title.indexOf('\n') > 0) {
       title = note.content.substring(0, note.content.indexOf('\n'));
     }
     if (!title) {
       title = 'Untitled';
     }
+
+    title += saved;
 
     return (
       <div className="note-summary">
@@ -175,8 +199,7 @@ var onChange = function () {
   console.log("ON CHANGE");
   React.render(
     <Notepad url="/notes" 
-             onChangeNote={onChangeNote}
-             onAddNote={onAddNote} />,
+             onChangeNote={onChangeNote}/>,
     document.getElementById("content")
   );
 };
@@ -185,12 +208,6 @@ var onChangeNote = function (note, value) {
   note.content = value;
   this.selected = note;
 
-  onChange();
-};
-
-var onAddNote = function () {
-  var note = {content: ''};
-  this.selected = note;
   onChange();
 };
 
