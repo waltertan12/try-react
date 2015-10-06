@@ -42,6 +42,12 @@ post '/notes' do
   Note.all.to_json if note.save
 end
 
+put '/notes' do
+  p params
+  note = Note.find(params[:id])
+  Note.all.to_json if note.update(content: params["content"])
+end
+
 get '/comments' do
   Comment.all.to_json
 end
@@ -51,6 +57,6 @@ post '/comments' do
   Comment.all.to_json if comment.save
 end
 
-if __FILE__ == $PROGRAM_NAME
-  pry
-end
+# if __FILE__ == $PROGRAM_NAME
+#   pry
+# end

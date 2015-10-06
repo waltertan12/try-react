@@ -179,9 +179,10 @@ var NotesList = React.createClass({
     return (
       <div className="note-list">
         {
-          notes.map(function (note) {
+          notes.map(function (note, index) {
             return (
               <a href="javascript:void(0)"
+                 key={index}
                  onClick={this.props.onSelectNote.bind(null, note)}>
               <NoteSummary url="/notes" key={note.id} note={note}/>
               </a>
